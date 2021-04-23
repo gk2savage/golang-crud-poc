@@ -62,6 +62,21 @@ func updateProduct(db *sql.DB, id2 int, product string, ptype string, price int,
 	tx.Commit()
 }
 
+//Get Count
+func getCount(db *sql.DB) int {
+	var count int
+
+	err := db.QueryRow("SELECT COUNT(*) FROM products").Scan(&count)
+	switch {
+	case err != nil:
+		errchecker(err)
+		return 0
+	default:
+
+		return count
+	}
+}
+
 //Delete product from db
 func delProduct(db *sql.DB, id int) {
 	tx, _ := db.Begin()
@@ -73,20 +88,23 @@ func delProduct(db *sql.DB, id int) {
 }
 
 func main() {
-	db, err := sql.Open("sqlite3", "database/qh.db")
+	db, _ := sql.Open("sqlite3", "database/qh.db")
 
-	fmt.Println(err)
+	//fmt.Println(err)
 
 	//addProduct(db, "WebSecurity", "Antivirus", 500, "Windows")
 
 	//updateProduct(db, 7, "ServerSecurity", "Server", 300, "Unix")
 
-	//delProduct(db, 8)
+	//delProduct(db, 7)
 
-	for i := 1; i <= 20; i++ {
+	p := getCount(db)
+	fmt.Println("Number of Rows in Database : ", p)
+
+	for i := 1; i <= p; i++ {
 		fmt.Println(getProducts(db, i))
 	}
-
+	//fmt.Println(getProducts(db, 3))
 	/*
 		var (
 			id      int
